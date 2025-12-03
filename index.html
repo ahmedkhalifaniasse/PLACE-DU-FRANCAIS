@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pensées actuelles</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Variables CSS pour les couleurs */
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --background-color: #f5f5f5;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --text-light: #777777;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Styles généraux */
+      * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-bottom: 70px; /* Pour laisser de la place pour la barre de navigation */
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page.hide-nav {
+            padding-bottom: 0;
+        }
+
+        /* En-tête */
+        header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: none;
+            outline: none;
+        }
+
+        .user-actions a {
+            color: white;
+            margin-left: 15px;
+            text-decoration: none;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: var(--primary-color);
+            padding: 10px 0;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            justify-content: space-around;
+        }
+
+        .nav-links li {
+            margin-right: 0;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Sections principales */
+        section {
+            padding: 20px 0;
+        }
+
+        .section-title {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 8px;
+        }
+
+        /* Grille de livres */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .book-card {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .book-info {
+            padding: 10px;
+        }
+
+        .book-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .book-author {
+            color: var(--text-light);
+            font-size: 0.8rem;
+        }
+
+        /* Barre de navigation en bas */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .bottom-nav.hidden {
+            transform: translateY(100%);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 0.8rem;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        /* Page de détail du livre */
+        .book-detail-header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .book-detail-cover {
+            width: 150px;
+            height: 200px;
+            object-fit: cover;
+            margin: 0 auto 15px;
+            display: block;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .book-detail-title {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .book-detail-author {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+
+        .book-detail-rating {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .book-detail-meta {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .meta-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .meta-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .book-detail-content {
+            padding: 20px;
+        }
+
+        .book-detail-section {
+            margin-bottom: 25px;
+        }
+
+        .book-detail-section h3 {
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+
+        .book-detail-section p {
+            margin-bottom: 10px;
+        }
+
+        .key-points-list {
+            list-style-type: none;
+        }
+
+        .key-points-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .key-points-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Page de lecture */
+        .reading-header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .reading-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .reading-controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .reading-controls button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .reading-content {
+            padding: 20px;
+            line-height: 1.8;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .chapter-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+            text-align: center;
+        }
+
+        .chapter-content {
+            font-size: 1.1rem;
+            text-align: justify;
+        }
+
+      .reading-settings {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background-color: white;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    z-index: 90;
+}
+
+        .settings-panel {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: none;
+            z-index: 90;
+        }
+
+        .settings-panel.active {
+            display: block;
+        }
+
+        .setting-option {
+            margin-bottom: 10px;
+        }
+
+        .setting-option label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .font-size-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .font-size-controls button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .theme-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .theme-option {
+            padding: 5px 10px;
+            border: 1px solid var(--primary-color);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .theme-option.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Page sommaire */
+        .toc-header {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toc-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .toc-list {
+            list-style-type: none;
+            padding: 15px;
+        }
+
+        .toc-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .toc-item:last-child {
+            border-bottom: none;
+        }
+
+        .toc-item:hover {
+            color: var(--primary-color);
+        }
+
+        /* Styles pour le mode sombre */
+        body.dark-mode {
+            --background-color: #1a1a1a;
+            --card-color: #2d2d2d;
+            --text-color: #f5f5f5;
+            --text-light: #aaaaaa;
+        }
+
+        /* Promotion */
+        .promotion-banner {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        /* Résultats de recherche */
+.search-results {
+    display: none;
+    background-color: white;
+    color: var(--text-color);
+    border-radius: 15px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    max-height: 70vh; /* 70% de la hauteur de l'écran */
+    min-height: 300px;
+    overflow-y: auto;
+    position: fixed; /* CHANGÉ: fixed au lieu de absolute */
+    top: 100px; /* Position fixe depuis le haut */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90vw; /* 90% de la largeur de la fenêtre */
+    max-width: 800px; /* Largeur maximale */
+    z-index: 1000; /* Très élevé pour être au-dessus de tout */
+    padding: 25px;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    border: 3px solid var(--primary-color);
+}
+
+.search-bar {
+    flex: 1;
+    max-width: 500px;
+    margin: 0 20px;
+    position: relative;
+    /* SUPPRIMER toute référence aux résultats ici */
+}
+
+
+.search-result-item {
+    padding: 20px 25px; /* BEAUCOUP PLUS D'ESPACE */
+    border-bottom: 2px solid #f0f0f0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background: #fafafa;
+}
+/* Style pour la page de résultats dédiée */
+#search-results-page .book-card {
+    padding: 25px;
+    margin-bottom: 20px;
+    background: #fafafa;
+    border-radius: 12px;
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+#search-results-page .book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-color);
+}
+
+#search-results-page .book-info {
+    padding: 0;
+}
+
+#search-results-page .book-title {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    color: var(--secondary-color);
+}
+
+#search-results-page .book-author {
+    font-size: 1rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+/* Mode sombre pour la page de résultats */
+body.dark-mode #search-results-page .book-card {
+    background: #3a3a3a;
+    border-color: #555;
+}
+.search-result-item:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Pour le mode sombre */
+body.dark-mode .search-results {
+    background-color: var(--card-color);
+    color: var(--text-color);
+}
+
+body.dark-mode .search-result-item:hover {
+    background-color: #3a3a3a;
+}
+
+/* Style pour la surbrillance dans les résultats */
+.search-result-item mark {
+    background-color: #ffeb3b;
+    color: #000;
+    padding: 1px 3px;
+    border-radius: 2px;
+    font-weight: bold;
+}
+.search-results.active {
+    display: block;
+}
+
+.search-result-item {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-item:hover {
+    background-color: #f5f5f5;
+}
+
+.search-result-item.highlighted {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Pour le mode sombre */
+body.dark-mode .search-results {
+    background-color: var(--card-color);
+    color: var(--text-color);
+}
+
+body.dark-mode .search-result-item:hover {
+    background-color: #3a3a3a;
+}
+
+body.dark-mode .search-result-item.highlighted {
+    background-color: var(--primary-color);
+    color: white;
+}
+        /* Responsive */
+        @media (max-width: 768px) {
+            .books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .book-cover {
+                height: 160px;
+            }
+            
+            .search-bar {
+                margin: 0 10px;
+            }
+        }
+      .back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+       
+      .search-highlight {
+    background-color: yellow;
+    color: black;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+    </style>
+</head>
+<body>
+    <!-- Page d'accueil -->
+    <div id="home-page" class="page active">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <a href="#" class="logo">PENSEES ACTUELLES</a>
+                    <div class="search-bar">
+                        <input type="text" id="search-input" placeholder="Recherchez un sujet...">
+                        <div class="search-results" id="search-results">
+                            <!-- Les résultats de recherche seront ajoutés ici -->
+                        </div>
+                    </div>
+                    <div class="user-actions">
+                        <a href="#"> </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        
+
+        <div class="container">
+            <section>
+                <h2 class="section-title">AHMED KHALIFA NIASSE  </h2>
+                <p>Opinions générales et polémiques sur l'Islam (2010-2022)</p>
+                
+                <div class="books-grid" id="free-books-grid">
+                    <!-- Les livres seront ajoutés dynamiquement par JavaScript -->
+                </div>
+            </section>
+
+            <section>
+                <h2 class="section-title">Sélections du jour</h2>
+                <p></p>
+                
+                <div class="books-grid" id="featured-books-grid">
+                    <!-- Les livres seront ajoutés dynamiquement par JavaScript -->
+                </div>
+            </section>
+
+            
+        </div>
+      <div style="padding: 40px; font-family: 'Playfair Display', serif; font-size: 18px; line-height: 1.9; color: #2c3e50; max-width: 850px; margin: 0 auto; background: linear-gradient(135deg, #f9fcff 0%, #e8f4f8 100%); border-radius: 20px; box-shadow: 0 25px 80px rgba(52, 152, 219, 0.15); position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, #3498db, #2980b9, #1abc9c);"></div>
+    <h2 style="color: #1a252f; text-align: center; margin-bottom: 40px; font-size: 2.2rem; font-weight: 700; position: relative; letter-spacing: 1px;">
+        Baye Niasse, le Fracassant
+        <div style="width: 120px; height: 4px; background: linear-gradient(90deg, #3498db, #1abc9c); margin: 15px auto; border-radius: 2px; box-shadow: 0 2px 10px rgba(52, 152, 219, 0.3);"></div>
+    </h2>
+    <p style="margin-bottom: 25px; text-align: justify; transition: transform 0.3s ease; position: relative;">
+        <strong style="color: #1a252f; font-weight: 600;">Baye Niasse</strong>, fils d'<strong>Abdoulaye Niasse</strong> et frère de mon propre père, était certainement un être singulier qui ne pouvait laisser personne indifférent. Cela se voyait autant dans son attitude extérieure que dans sa vie intérieure.
+    </p>
+    <p style="margin-bottom: 25px; text-align: justify; transition: transform 0.3s ease;">
+        D'abord son allure majestueuse, son éternel sourire et sa posture royale le distinguaient des autres. La sainteté qui se dégageait de son port altier faisait qu'on ne savait s'il fallait l'appeler <em style="color: #7f8c8d; font-style: italic;">le Roi des Saints</em> ou <em style="color: #7f8c8d; font-style: italic;">le Saint des Rois</em>. Ses montures témoignaient aussi d'une certaine noblesse, qu'elles acquéraient grâce à leur proximité avec lui. Comme par enchantement, sa présence leur procurait cette noblesse. De son cheval blanc rappelant <strong>Al Buraq</strong> à sa Mercedes 600 doubles de la version oblongue impériale qu'il avait tous deux nommés <strong>Liimaan</strong> (« la foi » en arabe) en passant par la Command car, la Chevrolet, la Lincoln, la Ford, l'Opel, l'ID, la DS23, tous ces moyens de transport avaient quelque chose de particulier qui les distinguait aussi des autres de leur espèce.
+    </p>
+    <p style="margin-bottom: 25px; text-align: justify; transition: transform 0.3s ease;">
+        Tout était en parfaite harmonie avec son port vestimentaire. Il en est ainsi même de son mobilier intérieur qui se distinguait par son lit royal doré, à baldaquin. Ses épouses, mères des arifs, étaient de sang royal. Celles qui ne l'étaient pas devenaient des princesses du fait qu'il les avait choisies comme épouses et du fait de leur comportement irréprochable. Sa propre mère, <strong>Aïcha</strong>, avait un nom éloquent du point de vue mystique : <strong>Diankha</strong>. Ce qui voulait dire « vierge » en wolof. Elle était ainsi nommée comme une certaine Marie, mère de Jésus. D'ailleurs, les taillées hispanophones de Baye l'appelaient « <em style="color: #e74c3c;">Madre de Dios</em> ». De plus, elle était l'homonyme de l'épouse du prophète Mohamed (PSL).
+    </p>
+    <p style="margin-bottom: 25px; text-align: justify; transition: transform 0.3s ease;">
+        Le charisme de <strong>Baye Niasse</strong> déteignait sur la plupart des rois, princes, chefs d'État et autres hautes autorités politiques qui, faisant sa connaissance, finissaient par compter parmi ses disciples ou ses serviteurs. Du raïs égyptien <strong>Gamal Abdal Nasser</strong> à <strong>Bayero</strong>, sultan de Kano, en passant par <strong>Kwame Nkrumah</strong>, l'<em style="color: #27ae60;">Osagyefo</em> ghanéen, tous ces grands hommes ont compté parmi ses intimes, charmés qu'ils étaient par l'étendue de son savoir et l'excellence de son caractère.
+    </p>
+    <p style="margin-bottom: 25px; text-align: justify; transition: transform 0.3s ease;">
+        À l'avènement de son règne mystique, en <strong style="font-style: italic; color: #e67e22;">1929</strong>, avec le concept de <strong>fayda</strong>, mot qui signifie « émanation » ou « déferlement », qu'il vulgarisa, il a substitué la croyance religieuse fondée sur la foi aveugle par la connaissance intime et éclairée de Dieu : la <strong>maarija</strong>. Il banalisa ainsi l'accès à Dieu en en faisant un objectif pouvant être atteint par une pratique religieuse intime. Sa démarche, très proche de celle des gnostiques, s'en écartait par son caractère moins théorique.
+    </p>
+    <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-left: 5px solid #3498db; margin: 30px 0; font-style: italic; color: #34495e; border-radius: 0 15px 15px 0; box-shadow: 0 10px 30px rgba(52, 152, 219, 0.1); position: relative; font-size: 1.1rem;">
+        <span style="position: absolute; top: -5px; left: 15px; font-size: 3.5rem; color: #3498db; font-family: serif;">«</span>
+        L'ignorance de l'essence divine constitue, en elle-même, le sens de la guidance.
+    </div>
+    <p style="margin-bottom: 25px; text-align: justify; transition: transform 0.3s ease;">
+        Tous ses détracteurs se sont, par la suite, ralliés à sa voie après avoir pratiqué en intimité les formules mystiques (dont la base est la <strong>salatoul faitha</strong>) qu'il a proposées. Celles-ci permettent à chacun de rallier l'Univers en tournant le dos à l'incertitude et à l'ignorance pour se trouver au cœur du divin au point de se confondre avec Lui, même momentanément.
+    </p>
+    <p style="margin-bottom: 25px; text-align: justify; transition: transform 0.3s ease;">
+        Des peuples et des peuplades de tous les continents se sont vu submerger par le credo barhamien. Les <strong>Haoussas</strong>, les <strong>Yorubas</strong>, tout comme les <strong>Sérères niominkas</strong> se retrouvaient à réciter ensemble les litanies de Baye et à méditer sur le sens de ses paroles. Se comprenant sans parler la même langue, ils psalmodiaient à l'unisson le nom « <strong>Allah</strong> ». Ils ressentaient à la récitation itérative de ce mot un goût particulier et indescriptible car ressortant du domaine de l'Ineffable.
+    </p>
+    <p style="margin-bottom: 25px; text-align: justify; transition: transform 0.3s ease;">
+        Ce destin fabuleux illustré par tous ces faits relatés ci-dessus était prévisible si l'on en croit les signes apparus dans sa tendre enfance. En effet, né en <strong style="font-style: italic; color: #e67e22;">octobre 1900</strong> à <strong>Taiba Niassène</strong>, la franco-sénégalaise, il sera emmené nuitamment, trois jours plus tard, à <strong>Keur Samba</strong> l'anglo-gambienne, distante seulement d'une vingtaine de kilomètres de son village natal. C'est là qu'il fut baptisé par son père qui lui donna le prénom de son oncle maternel, <strong>Ibrahima Thiam</strong>, un érudit musulman du <strong>XIX<sup>e</sup> siècle</strong>. Plus connu sous le nom de <strong>Serigne Kellel</strong>, ce dernier, pendant un séjour au Djolof, y eut un homonyme qui aura aussi un destin hors du commun : il s'agit de <strong>Cheikh Ibra Fall</strong>.
+    </p>
+    <div style="background: linear-gradient(135deg, #e8f4f8 0%, #d1ecf1 100%); padding: 20px; border-radius: 12px; margin: 30px 0; text-align: center; font-weight: 600; color: #1a252f; box-shadow: 0 8px 25px rgba(52, 152, 219, 0.08); font-size: 1.15rem; font-family: 'Playfair Display', serif; border: 2px dashed #3498db;">
+        Ibra Niasse, Ibra Fall : même homonyme et bien des similitudes !
+    </div>
+    <p style="margin-bottom: 25px; text-align: justify; transition: transform 0.3s ease;">
+        Le père de Baye Niasse, <strong>El Hadj Abdoulaye Niasse le Grand</strong>, l'avait soumis, en plus de la formation aux sciences islamiques, à un entraînement militaire. À l'instar de ses aînés, dont le plus âgé était mon père, <strong>Mame Khalifa Niasse</strong>, il savait nager, monter à cheval, tirer à l'arc et au fusil. Comme eux, il avait le pouvoir de se camoufler pour rester invisible à l'ennemi. Sa maîtrise du langage des animaux facilitait sa communication avec ses autres frères avec qui il utilisait ce type de signes pour échapper à l'attention de l'adversaire. C'est à l'âge de <strong>11 ans</strong> que son père l'emmena avec lui à <strong>Kaolack</strong> pour s'y installer définitivement après avoir quitté le village niassène de <strong>Sam</strong>, près de <strong>Kaur</strong>, en Gambie.
+    </p>
+    <p style="margin-bottom: 25px; text-align: justify; transition: transform 0.3s ease;">
+        C'était un homme qui avait une force tranquille qu'il utilisait en cas de besoin. Par exemple, n'ayant jamais côtoyé les grands champions de lutte de son temps, il les terrassait lorsqu'ils avaient l'audace de passer près de sa daara. Alors, il les faisait tomber d'une seule main tout en continuant à écrire, la tablette fixée sur le dos de l'un de ses taillés, des versets du Coran.
+    </p>
+    <p style="margin-bottom: 25px; text-align: justify; transition: transform 0.3s ease;">
+        Du vivant de son père, El Hadj Abdoulaye Niasse le Grand, il ne pouvait rester tranquille en participant aux séances de wazifa. En récitant la <strong>Salatoul Fatiha</strong>, sa poitrine émettait un bruit qui se situait entre le ronronnement d'un bolide et le rugissement du lion.
+    </p>
+    <p style="margin-bottom: 25px; text-align: justify; transition: transform 0.3s ease;">
+        Les aspects tout aussi mystiques que mystérieux de sa personnalité et de son œuvre ont toujours provoqué dans le monde entier des controverses ainsi que des débats contradictoires qui tournaient autour de lui et de la doctrine qu'il a vulgarisée. Mais, très souvent, ces discussions s'arrêtaient net dès qu'il apparaissait parce que tous, ou du moins, la plupart des individus présents, tombaient en extase, foudroyés qu'ils étaient par le sourire convaincant de cet homme de Dieu. Cet être séduisant qui était incapable de déplaire aux aimés de Dieu était percutant. On peut même dire qu'il était <strong style="color: #e74c3c; font-size: 1.1em;">le fracassant</strong> !
+    </p>
+    <div style="text-align: right; margin-top: 50px; color: #7f8c8d; font-style: italic; border-top: 2px solid #ecf0f1; padding-top: 20px; font-family: 'Playfair Display', serif; font-size: 1rem; position: relative;">
+        <span style="background: linear-gradient(90deg, #3498db, #1abc9c); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">30 novembre 2018</span>
+    </div>
+</div>
+    </div>
+
+    <!-- Page de détail du livre -->
+  <!-- Page de détail du livre -->
+<div id="book-detail-page" class="page hide-nav">
+    <div class="book-detail-header" style="position: relative;">
+        <!-- AJOUTE CE BOUTON RETOUR -->
+        <button id="back-from-detail" style="position: absolute; top: 15px; left: 15px; background: none; border: none; color: white; font-size: 1.2rem; z-index: 10;">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <button class="favorite-btn" id="favorite-btn">
+            <i class="far fa-heart"></i>
+        </button>
+    
+          
+            <img src="" alt="Couverture du livre" class="book-detail-cover" id="detail-cover">
+            <h1 class="book-detail-title" id="detail-title">Titre du livre</h1>
+            <p class="book-detail-author" id="detail-author">Auteur du livre</p>
+            <div class="book-detail-rating">
+                 <button id="start-reading" style="background-color: var(--primary-color); color: white; border: none; padding: 12px 20px; border-radius: 8px; width: 100%; font-size: 1rem; cursor: pointer;">
+                Lire 
+            </button>
+              <button id="show-summary" style="background-color: var(--primary-color); color: white; border: none; padding: 12px 20px; border-radius: 8px; width: 100%; font-size: 1rem; cursor: pointer; margin-top: 10px;">
+    Voir le sommaire
+</button>
+            </div>
+      
+            <div class="book-detail-meta">
+                <div class="meta-item">
+                    <span class="meta-value" id="detail-key-points">10</span>
+                    <span class="meta-label"> </span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-value" id="detail-duration">51 min</span>
+                    <span class="meta-label"> </span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-value" id="detail-rating">4.6</span>
+                    <span class="meta-label"> </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="book-detail-content">
+          
+            <div class="book-detail-section">
+                <h3>Que trouverez-vous ?</h3>
+                <p id="detail-description">Description du livre...</p>
+            </div>
+
+            <div class="book-detail-section">
+                <h3>Points clés</h3>
+                <ul class="key-points-list" id="detail-key-points-list">
+                    <!-- Les points clés seront ajoutés dynamiquement -->
+                </ul>
+            </div>
+
+            
+        </div>
+    </div>
+
+    <!-- Page de lecture -->
+<div id="reading-page" class="page hide-nav">
+    <div class="reading-header">
+        <!-- BOUTON RETOUR VERS DÉTAIL - CORRECT -->
+        <button id="back-to-detail" style="background: none; border: none; color: white; font-size: 1.2rem;">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="reading-title" id="reading-chapter-title">Chapitre 1</div>
+            <div class="reading-controls">
+                <button id="show-toc">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="reading-content">
+            <h2 class="chapter-title" id="chapter-title"> </h2>
+            <div class="chapter-content" id="chapter-content">
+                 
+                <p> </p>
+            </div>
+        </div>
+
+       <div class="reading-settings" id="reading-settings-btn">
+    <i class="fas fa-font"></i>
+</div> 
+
+        <div class="settings-panel" id="settings-panel">
+            <div class="setting-option">
+                <label>Taille de police:</label>
+                <div class="font-size-controls">
+                    <button id="decrease-font"><i class="fas fa-minus"></i></button>
+                    <span id="font-size-display">16px</span>
+                    <button id="increase-font"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+            <div class="setting-option">
+                <label>Thème:</label>
+                <div class="theme-toggle">
+                    <div class="theme-option active" data-theme="light">Clair</div>
+                    <div class="theme-option" data-theme="dark">Sombre</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page sommaire -->
+    <div id="toc-page" class="page hide-nav">
+        <div class="toc-header">
+            <button id="back-to-reading">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="toc-title">Sommaire</div>
+            <div></div> <!-- Pour l'alignement -->
+        </div>
+
+        <ul class="toc-list" id="toc-list">
+            <!-- Les chapitres seront ajoutés dynamiquement -->
+        </ul>
+    </div>
+  <!-- Page Biographie -->
+<div id="biography-page" class="page">
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo"> Biographie et bibliographie</a>
+                
+                <div class="user-actions">
+                    <a href="#"> </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+   <div class="container">
+
+    <div class="authors-grid" 
+         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 35px; margin: 50px 0;">
+
+        <!-- Carte Auteur : Ahmed Khalifa Niasse -->
+        <div class="author-card" 
+             style="background: #ffffff; border-radius: 18px; overflow: hidden; 
+                    box-shadow: 0 15px 40px rgba(0,0,0,0.1); transition: transform 0.35s ease;">
+
+            <div style="position: relative;">
+                <img src="https://i.postimg.cc/j53F1cSj/79645064-57653267.jpg"
+                     alt="Ahmed Khalifa Niasse"
+                     style="width: 100%; height: 260px; object-fit: cover;">
+                
+                <div style="position: absolute; top: 15px; right: 15px; 
+                            background: #2c3e50; color: white; padding: 8px 18px; 
+                            border-radius: 25px; font-size: 0.95rem; letter-spacing: 0.2px;">
+                    Guide religieux
+                </div>
+            </div>
+
+            <div style="padding: 30px;">
+
+                <h3 style="color: #2c3e50; margin-bottom: 12px; font-size: 1.6rem; font-weight: 700;">
+                    Ahmed Khalifa Niasse
+                </h3>
+
+                <!-- Naissance -->
+                <div style="display: flex; align-items: center; margin-bottom: 18px;">
+                    <div style="width: 8px; height: 8px; background: #8e44ad; border-radius: 50%; margin-right: 10px;"></div>
+                    <span style="color: #34495e;">Né le 25 décembre 1945 à Kaolack, Sénégal</span>
+                </div>
+
+                <!-- BIOGRAPHIQUE CLASSIQUE -->
+                <p style="color: #555; line-height: 1.7; margin-bottom: 25px; text-align: justify;">
+                    Ahmed Khalifa Niasse est un homme politique sénégalais, homme d’affaires et chef religieux issu de la famille Niasse de Kaolack. 
+                    Son père, Muhammad Al Khalifa Niasse, est un grand érudit et premier khalife de la branche niassène de la Tijania, 
+                    et sa mère, Aminatou Mint Barham, est issue de la grande tribu mauritanienne des Idaw Ali, descendants du Prophète.
+                    Il a occupé plusieurs fonctions dans le gouvernement du Sénégal, notamment celle de ministre chargé de la construction d’une nouvelle capitale. 
+                    Il est également président et fondateur du Front des Alliances Patriotiques (FAP) et reconnu pour son influence et ses relations avec de nombreux chefs d’État.
+                </p>
+
+                <div style="background: #fdfdfd; border-left: 5px solid #2c3e50; padding: 18px; border-radius: 12px;">
+
+                    <h4 style="color: #2c3e50; margin-bottom: 12px; font-size: 1.1rem;">
+                        Carrière politique
+                    </h4>
+
+                    <p style="color: #555; line-height: 1.6; text-align: justify; margin-bottom: 10px;">
+                        Il débute en politique sous la présidence de Léopold Sédar Senghor.  
+                        Sa première apparition marquante fut une mobilisation massive dans la région de Kaolack pour accueillir le président.  
+                        Cet événement le propulse parmi les personnalités politiques influentes du pays.  
+                        Il participa à la création du Parti Démocratique Sénégalais (PDS) aux côtés d'Abdoulaye Wade.  
+                        Malgré un parcours ponctué de changements d’alliances, il reste une figure majeure de la scène politique, 
+                        connu pour ses prédictions et ses prises de position médiatiques.
+                    </p>
+
+                    <p style="color: #555; line-height: 1.6; text-align: justify; margin-top: 10px;">
+                        Il s’est déclaré candidat à l’élection présidentielle de 2012, avant de retirer sa candidature pour soutenir Abdoulaye Wade.
+                    </p>
+
+                </div>
+
+                <!-- BUSINESS -->
+                <div style="background: #fafafa; border-left: 5px solid #8e44ad; padding: 18px; 
+                            border-radius: 12px; margin-top: 18px;">
+
+                    <h4 style="color: #2c3e50; margin-bottom: 12px; font-size: 1.1rem;">
+                        Activités économiques
+                    </h4>
+
+                    <p style="color: #555; line-height: 1.6; text-align: justify;">
+                        Ahmed Khalifa Niasse figure parmi les hommes d’affaires les plus riches du Sénégal.  
+                        Il dirige AKN Holding, un vaste groupe familial, et possède diverses sociétés d’investissement, 
+                        de locations de jets privés ainsi qu’un important patrimoine immobilier au Sénégal et dans la sous-région.  
+                        Il entretient également des relations étroites avec plusieurs chefs d’État, notamment dans les pays pétroliers du Golfe.
+                    </p>
+
+                </div>
+
+                <!-- Fonctions officielles -->
+                <div style="background: #ffffff; padding: 18px; border-radius: 12px; margin-top: 18px;
+                            border: 1px solid #eee;">
+
+                    <h4 style="color: #2c3e50; margin-bottom: 12px; font-size: 1.1rem;">
+                        Fonctions officielles occupées
+                    </h4>
+
+                    <ul style="color: #555; list-style: none; padding: 0; line-height: 1.6;">
+                        <li>• Conseiller spécial du Président Abdou Diouf</li>
+                        <li>• Conseiller spécial de Omar Bongo</li>
+                        <li>• Vice-président de l’Assemblée nationale (1988)</li>
+                        <li>• Président de l’Institut Islamique Agricole (1986 - présent)</li>
+                        <li>• Ambassadeur itinérant (2005 - 2007)</li>
+                        <li>• Ministre-conseiller du Président (2007 - 2009)</li>
+                        <li>• Ministre d’État chargé de la construction d’une nouvelle capitale (2007 - 2009)</li>
+                    </ul>
+
+                </div>
+
+                 
+                </div>
+            </div>
+
+           
+        
+        </div>
+    </div>
+</div>
+<!-- Page résultats de recherche -->
+<!-- Page résultats de recherche -->
+<div id="search-results-page" class="page">
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <button id="back-from-search" style="background:none; border:none; color:white; font-size:1.2rem;">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="search-bar" style="flex:1; margin:0 15px;">
+                    <input type="text" id="search-results-input" placeholder="Titre, auteur ou sujet">
+                </div>
+                <div style="width: 24px;"></div> <!-- Pour l'alignement -->
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <section>
+            <h2 class="section-title" id="search-results-title">Résultats de recherche</h2>
+            <div class="books-grid" id="search-results-grid">
+                <!-- Les résultats seront ajoutés ici -->
+            </div>
+        </section>
+    </div>
+</div>
+    <!-- Page bibliothèque -->
+    <div id="library-page" class="page">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <a href="#" class="logo">Ahmed Khalifa Niasse</a>
+                     
+                    <div class="user-actions">
+                        <a href="#"> </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <section>
+                <h2 class="section-title">Mes favoris</h2>
+                <div class="books-grid" id="favorite-books-grid">
+                    <!-- Les livres favoris seront ajoutés dynamiquement -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Barre de navigation en bas -->
+    <div class="bottom-nav" id="bottom-nav">
+        <a href="#" class="nav-item active" data-page="home-page">
+            <div class="nav-icon"><i class="fas fa-home"></i></div>
+            <span> </span>
+        </a>
+       
+        <a href="#" class="nav-item" data-page="library-page">
+            <div class="nav-icon"><i class="fas fa-book"></i></div>
+            <span> </span>
+        </a>
+      <a href="#" class="nav-item" data-page="biography-page">
+    <div class="nav-icon"><i class="fas fa-user-graduate"></i></div>
+    <span> </span>
+</a>
+        
+    </div>
+
+    <script>
+        // Données des livres
+        const books = [
+            {
+                id: 1,
+                title: "PENSEES ACTUELLES (TOME 1)",
+                author: "AHMED KHALIFA NIASSE",
+                cover: "https://i.postimg.cc/FzWn4HZM/ZESGFZ.png",
+                description: "Cet ouvrage, premier d’une série de quatre tomes, explore des thématiques liées à la religion islamique, avec un focus particulier sur l’islam confrérique sénégalais. L’auteur y analyse les dynamiques religieuses, les enjeux socio-politiques et les déviances doctrinales, tout en mettant en avant la richesse et la profondeur des enseignements coraniques.Divisé en chapitres, ce recueil aborde des sujets variés comme le rôle des confréries, la lutte contre le fondamentalisme, et la place des sciences dans l’islam. Il met aussi en lumière les défis posés par l’extrémisme religieux, tout en plaidant pour un islam basé sur l’unité et la complémentarité. Ahmed Khalifa NIASSE propose une réflexion critique sur l’évolution de l’islam au Sénégal et dans le monde, en s’appuyant sur des récits historiques, des analyses personnelles et des références coraniques.",
+                
+                duration: "recueil de contributions et de communiqués parus dans la presse",
+               
+                keyPointsList: [
+                    "Radiographie de l’islam confrérique sénégalais",
+                    "L’appel à un islam équilibré et lumineux",
+                    "Analyse des déviances et dérives doctrinales",
+                    "Un discours ferme contre le fondamentalisme et l’extrémisme",
+                    "Les sciences et la connaissance comme piliers de l’islam",
+                    "Une lecture socio-politique du religieux",
+                    "Une mise en perspective internationale",
+                    "Un style mêlant histoire, spiritualité et analyse profonde"
+
+                ],
+                chapters: [
+                    {
+                        title: "In memoriam",
+                        content: `
+    
+    <p>Puis la lettre <b><i>deel</i></b>, <b><i>daal</i></b> en arabe qui, lorsqu’elle reçoit un point diacritique sur elle, se prononce comme le « th » anglais. Ne pouvant pas le prononcer correctement, les Wolofs l’appellent le <b><i>d’inouillé</i></b> comme c’était le cas pour le <b><i>s</i></b>.</p>
+
+    <p>Non seulement les Wolofs ont digéré l’alphabet coranique mais le fait de comparer une syllabe à une forme humaine ou animale est un fait qui peut bien donner raison à Cheikh Anta Diop, étant donné que les syllabes sont des formes hiéroglyphiques stylisées. Cela était jusqu’à présent la règle. Mais en remontant à l’envers pour transformer les syllabes en hiéroglyphes, cela peut bien venir de l’archétype, c’est-à-dire d’une mémoire ancienne enfouie dans l’inconscient, si l’on est d’avis que les Wolofs ont une origine égyptienne, donc nilotique, comme l’affirme le défunt patron du laboratoire Carbone 14 de l’IFAN.</p>
+
+    <p>La chose suivante confirme cela. Pour les signes diacritiques, les Wolofs ont fait la même chose. L’un des signes diacritiques est appelé <b><i>yet</i></b> (« le bâton ») alors qu’un autre porte un nom qui signifie que l’idéogramme doit être lu comme s’il y avait la lettre <b><i>o</i></b> à la fin, c’est-à-dire une occlusion. Ce signe diacritique est appelé <b><i>tont</i></b> pour indiquer la perche par laquelle on tire les fruits de l’arbre.</p>
+
+    <p>Le signe diacritique signifie que le mot doit être lu comme s’il était terminé par la lettre <b><i>h</i></b>. Ils l’ont appelée <b><i>neeg</i></b> (« chambre » ou « case ») – un autre retour inconscient aux hiéroglyphes.</p>
+
+    <p>L’apport du Sénégal à l’enrichissement de la littérature coranique est sans équivoque mais il va plus loin parce qu’il ressuscite des valeurs jadis contestées. Il dévoile au grand jour des réalités enfouies jusque-là dans des profondeurs insondables.</p>
+`
+                    },
+                ]
+            
+           
+            }
+        ];
+
+        // Éléments DOM
+        const pages = document.querySelectorAll('.page');
+        const bottomNav = document.getElementById('bottom-nav');
+        const bottomNavItems = document.querySelectorAll('.nav-item');
+        const freeBooksGrid = document.getElementById('free-books-grid');
+        const featuredBooksGrid = document.getElementById('featured-books-grid');
+        const favoriteBooksGrid = document.getElementById('favorite-books-grid');
+        const startReadingBtn = document.getElementById('start-reading');
+        const backToDetailBtn = document.getElementById('back-to-detail');
+        const showTocBtn = document.getElementById('show-toc');
+        const backToReadingBtn = document.getElementById('back-to-reading');
+        const readingSettingsBtn = document.getElementById('reading-settings-btn');
+        const settingsPanel = document.getElementById('settings-panel');
+        const decreaseFontBtn = document.getElementById('decrease-font');
+        const increaseFontBtn = document.getElementById('increase-font');
+        const fontSizeDisplay = document.getElementById('font-size-display');
+        const themeOptions = document.querySelectorAll('.theme-option');
+        const tocList = document.getElementById('toc-list');
+        const favoriteBtn = document.getElementById('favorite-btn');
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+
+        // Variables d'état
+        let currentBook = null;
+        let currentChapterIndex = 0;
+        let fontSize = 16;
+        let favoriteBooks = JSON.parse(localStorage.getItem('favoriteBooks')) || [];
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Remplir les grilles de livres
+            populateBookGrids();
+            
+            // Charger les livres favoris
+            loadFavoriteBooks();
+            
+            // Configurer les écouteurs d'événements
+            setupEventListeners();
+        });
+
+        // Remplir les grilles de livres
+        function populateBookGrids() {
+            // Livres gratuits
+            freeBooksGrid.innerHTML = '';
+            books.forEach(book => {
+                const bookCard = createBookCard(book);
+                freeBooksGrid.appendChild(bookCard);
+            });
+
+            // Livres en vedette
+            featuredBooksGrid.innerHTML = '';
+            books.forEach(book => {
+                const bookCard = createBookCard(book);
+                featuredBooksGrid.appendChild(bookCard);
+            });
+        }
+
+        // Créer une carte de livre
+     // Créer une carte de livre
+function createBookCard(book) {
+    const bookCard = document.createElement('div');
+    bookCard.className = 'book-card';
+    bookCard.innerHTML = `
+        <img src="${book.cover}" alt="${book.title}" class="book-cover">
+        <div class="book-info">
+            <div class="book-title">${book.title}</div>
+            <div class="book-author">${book.author}</div>
+        </div>
+    `;
+    bookCard.addEventListener('click', () => {
+        const currentQuery = document.getElementById('search-results-input').value;
+        if (currentQuery.trim().length > 0) {
+            goToSearchResult(book, currentQuery);
+        } else {
+            showBookDetail(book);
+        }
+    });
+    return bookCard;
+}
+
+        // Charger les livres favoris
+        function loadFavoriteBooks() {
+            favoriteBooksGrid.innerHTML = '';
+            
+            if (favoriteBooks.length === 0) {
+                favoriteBooksGrid.innerHTML = '<p>Aucun livre favori pour le moment.</p>';
+                return;
+            }
+            
+            favoriteBooks.forEach(bookId => {
+                const book = books.find(b => b.id === bookId);
+                if (book) {
+                    const bookCard = createBookCard(book);
+                    favoriteBooksGrid.appendChild(bookCard);
+                }
+            });
+        }
+
+        // Configurer les écouteurs d'événements
+   // Configurer les écouteurs d'événements
+function setupEventListeners() {
+    // Navigation du bas
+    bottomNavItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const pageId = this.getAttribute('data-page');
+            
+            // Mettre à jour les éléments actifs
+            bottomNavItems.forEach(navItem => navItem.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Afficher la page correspondante
+            showPage(pageId);
+        });
+    });
+    setupSettingsPanelClose();
+
+    // Bouton favori
+    favoriteBtn.addEventListener('click', function() {
+        if (currentBook) {
+            toggleFavorite(currentBook.id);
+        }
+    });
+
+  document.getElementById('back-from-detail').addEventListener('click', function() {
+    showPage('home-page');
+});
+    // RECHERCHE PAGE ACCUEIL - CORRIGÉ
+// Recherche page accueil
+searchInput.addEventListener('input', function() {
+    const query = this.value.toLowerCase().trim();
+    
+    if (query.length === 0) {
+        searchResults.classList.remove('active');
+        return;
+    }
+    
+    // Filtrer les livres dans le CONTENU
+    const results = books.filter(book => {
+        // Rechercher dans le titre, auteur, description
+        const basicMatch = book.title.toLowerCase().includes(query) || 
+                          book.author.toLowerCase().includes(query) ||
+                          book.description.toLowerCase().includes(query);
+        
+        // Rechercher dans le CONTENU des chapitres
+        const contentMatch = book.chapters.some(chapter => 
+            chapter.content.toLowerCase().includes(query)
+        );
+        
+        return basicMatch || contentMatch;
+    });
+        
+        // Afficher les résultats
+        displaySearchResults(results);
+    });
+
+    // Bouton de lecture
+    startReadingBtn.addEventListener('click', function() {
+        if (currentBook) {
+            showReadingPage(currentBook, 0);
+        }
+    });
+
+    // Bouton retour au détail
+    backToDetailBtn.addEventListener('click', function() {
+        showPage('book-detail-page');
+    });
+
+    // Bouton afficher sommaire
+    showTocBtn.addEventListener('click', function() {
+        if (currentBook) {
+            showTocPage(currentBook);
+        }
+    });
+
+    // Bouton retour à la lecture
+    backToReadingBtn.addEventListener('click', function() {
+        showPage('reading-page');
+    });
+
+    // Paramètres de lecture
+    readingSettingsBtn.addEventListener('click', function() {
+        settingsPanel.classList.toggle('active');
+    });
+
+    // Contrôles de taille de police
+    decreaseFontBtn.addEventListener('click', function() {
+        if (fontSize > 12) {
+            fontSize--;
+            updateFontSize();
+        }
+    });
+
+    increaseFontBtn.addEventListener('click', function() {
+        if (fontSize < 24) {
+            fontSize++;
+            updateFontSize();
+        }
+    });
+
+    // Options de thème
+    themeOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            const theme = this.getAttribute('data-theme');
+            
+            themeOptions.forEach(opt => opt.classList.remove('active'));
+            this.classList.add('active');
+            
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        });
+    });
+
+    // BOUTON RETOUR PAGE RECHERCHE - CORRIGÉ
+    document.getElementById('back-from-search').addEventListener('click', function() {
+        showPage('home-page');
+    });
+// Dans la fonction setupEventListeners(), ajoutez :
+document.getElementById('show-summary').addEventListener('click', function() {
+    if (currentBook) {
+        showTocPage(currentBook);
+    }
+});
+    // RECHERCHE DEPUIS PAGE RÉSULTATS - CORRIGÉ
+// RECHERCHE DEPUIS PAGE RÉSULTATS - MODIFIÉ
+document.getElementById('search-results-input').addEventListener('input', function() {
+    const query = this.value.toLowerCase().trim();
+    
+    if (query.length === 0) {
+        document.getElementById('search-results-grid').innerHTML = '<p>Entrez un terme de recherche</p>';
+        document.getElementById('search-results-title').textContent = 'Résultats de recherche';
+        return;
+    }
+    
+    // Filtrer dans le CONTENU des livres
+    const results = books.filter(book => {
+        // Rechercher dans les chapitres
+        return book.chapters.some(chapter => 
+            chapter.content.toLowerCase().includes(query)
+        );
+    });
+    
+    // Afficher les phrases au lieu des livres
+    const resultsGrid = document.getElementById('search-results-grid');
+    resultsGrid.innerHTML = '';
+    
+    if (results.length === 0) {
+        resultsGrid.innerHTML = '<p style="padding: 20px; text-align: center;">Aucun résultat trouvé</p>';
+    } else {
+        results.forEach((book) => {
+            book.chapters.forEach((chapter, chapterIndex) => {
+                const content = chapter.content;
+                const regex = new RegExp(`([^.!?]*${query}[^.!?]*[.!?])`, 'gi');
+                const matches = content.match(regex);
+                
+                if (matches) {
+                    matches.forEach((sentence) => {
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'book-card';
+                        resultItem.style.cursor = 'pointer';
+                        
+                        const highlightedSentence = sentence.replace(
+                            new RegExp(query, 'gi'), 
+                            '<mark class="search-highlight">$&</mark>'
+                        );
+                        
+                      // Dans la fonction displaySearchResults, modifiez la création des résultats :
+resultItem.innerHTML = `
+    <div style="font-size: 1.1rem; font-weight: bold; color: var(--secondary-color); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+        <span>${book.title}</span>
+        <span style="font-size: 0.9rem; color: var(--primary-color); background: rgba(52, 152, 219, 0.1); padding: 4px 12px; border-radius: 15px;">
+            ${chapter.title}
+        </span>
+    </div>
+    <div style="font-size: 1.05rem; line-height: 1.7; background: white; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+        ${highlightedSentence}
+    </div>
+    <div style="margin-top: 10px; font-size: 0.9rem; color: var(--text-light); text-align: right;">
+        Cliquer pour aller à cette section →
+    </div>
+`;
+                        
+                        resultItem.addEventListener('click', () => {
+                            goToSearchResult(book, chapterIndex, query, sentence);
+                        });
+                        
+                        resultsGrid.appendChild(resultItem);
+                    });
+                }
+            });
+        });
+    }
+    
+    document.getElementById('search-results-title').textContent = 
+        `Résultats pour "${query}"`;
+});
+    // Navigation par glissement horizontal
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    const readingContent = document.getElementById('reading-page');
+    
+    readingContent.addEventListener('touchstart', function(e) {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+    
+    readingContent.addEventListener('touchend', function(e) {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+    
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        
+        if (touchEndX < touchStartX - swipeThreshold) {
+            // Glissement vers la gauche - chapitre suivant
+            nextChapter();
+        } else if (touchEndX > touchStartX + swipeThreshold) {
+            // Glissement vers la droite - chapitre précédent
+            previousChapter();
+        }
+    }
+}
+
+      // Fonction pour aller directement au chapitre contenant le texte recherché
+// Fonction pour aller directement à la phrase recherchée
+function goToSearchResult(book, chapterIndex, query, sentence = null) {
+    showReadingPage(book, chapterIndex);
+    
+    // Surligner et scroll vers le terme recherché
+    setTimeout(() => {
+        if (sentence) {
+            // Trouver la position exacte de la phrase dans le chapitre
+            highlightAndScrollToText(sentence.trim());
+        } else {
+            highlightSearchText(query);
+        }
+    }, 200);
+}
+        // Afficher une page spécifique
+      function showPage(pageId) {
+    pages.forEach(page => page.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    
+    // Masquer ou afficher la barre de navigation
+    if (document.getElementById(pageId).classList.contains('hide-nav') || 
+        pageId === 'search-results-page') {  // AJOUTER CETTE CONDITION
+        bottomNav.classList.add('hidden');
+    } else {
+        bottomNav.classList.remove('hidden');
+    }
+    
+    // Recharger les livres favoris si on va sur la page bibliothèque
+    if (pageId === 'library-page') {
+        loadFavoriteBooks();
+    }
+}
+// Fonction pour surligner et scroll vers un texte spécifique
+function highlightAndScrollToText(text) {
+    const chapterContent = document.getElementById('chapter-content');
+    const content = chapterContent.innerHTML;
+    
+    // Supprimer les anciennes surbrillances
+    const cleanContent = content.replace(/<mark class="search-highlight">|<\/mark>/gi, '');
+    
+    // Mettre en surbrillance le texte spécifique
+    const regex = new RegExp(`(${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    const highlightedContent = cleanContent.replace(regex, '<mark class="search-highlight" id="search-target">$1</mark>');
+    
+    chapterContent.innerHTML = highlightedContent;
+    
+    // Scroll vers l'élément surligné
+    setTimeout(() => {
+        const targetElement = document.getElementById('search-target');
+        if (targetElement) {
+            targetElement.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+            
+            // Animation visuelle supplémentaire
+            targetElement.style.transition = 'all 0.5s ease';
+            targetElement.style.backgroundColor = '#ffeb3b';
+            
+            setTimeout(() => {
+                targetElement.style.backgroundColor = 'yellow';
+            }, 500);
+        }
+    }, 100);
+}
+        // Afficher les détails d'un livre
+        function showBookDetail(book) {
+            currentBook = book;
+            
+            // Mettre à jour les éléments de la page de détail
+            document.getElementById('detail-cover').src = book.cover;
+            document.getElementById('detail-title').textContent = book.title;
+            document.getElementById('detail-author').textContent = book.author;
+            document.getElementById('detail-description').textContent = book.description;
+            document.getElementById('detail-key-points').textContent = book.keyPoints;
+            document.getElementById('detail-duration').textContent = book.duration;
+            document.getElementById('detail-rating').textContent = book.rating;
+            
+            // Mettre à jour le bouton favori
+            updateFavoriteButton(book.id);
+            
+            // Mettre à jour la liste des points clés
+            const keyPointsList = document.getElementById('detail-key-points-list');
+            keyPointsList.innerHTML = '';
+            book.keyPointsList.forEach(point => {
+                const li = document.createElement('li');
+                li.textContent = point;
+                keyPointsList.appendChild(li);
+            });
+            
+            // Afficher la page de détail
+            showPage('book-detail-page');
+        }
+
+        // Afficher la page de lecture
+      function showReadingPage(book, chapterIndex) {
+    currentBook = book;
+    currentChapterIndex = chapterIndex;
+    
+    // Mettre à jour les éléments de la page de lecture
+    document.getElementById('reading-chapter-title').textContent = `Chapitre ${chapterIndex + 1}`;
+    document.getElementById('chapter-title').textContent = book.chapters[chapterIndex].title;
+    document.getElementById('chapter-content').innerHTML = book.chapters[chapterIndex].content;
+    
+    // Afficher la page de lecture
+    showPage('reading-page');
+    
+    // FORCER LE SCROLL EN HAUT APRÈS UN COURT DELAI
+    setTimeout(() => {
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'instant' // 'instant' pour un défilement immédiat sans animation
+        });
+        
+        // Forcer aussi le scroll de l'élément de contenu
+        const readingContent = document.querySelector('.reading-content');
+        if (readingContent) {
+            readingContent.scrollTop = 0;
+        }
+    }, 50);
+    
+    // Ajouter le bouton favori pour le chapitre
+    updateChapterFavoriteButton(book.id, chapterIndex);
+}
+
+        // Afficher la page du sommaire
+        function showTocPage(book) {
+            currentBook = book;
+            
+            // Mettre à jour la liste du sommaire
+            tocList.innerHTML = '';
+            book.chapters.forEach((chapter, index) => {
+                const li = document.createElement('li');
+                li.className = 'toc-item';
+                li.textContent = chapter.title;
+                li.addEventListener('click', () => {
+                    showReadingPage(book, index);
+                });
+                tocList.appendChild(li);
+            });
+            
+            // Afficher la page du sommaire
+            showPage('toc-page');
+        }
+
+        // Basculer le statut favori d'un livre
+        function toggleFavorite(bookId) {
+            const index = favoriteBooks.indexOf(bookId);
+            
+            if (index === -1) {
+                // Ajouter aux favoris
+                favoriteBooks.push(bookId);
+                favoriteBtn.innerHTML = '<i class="fas fa-heart"></i>';
+            } else {
+                // Retirer des favoris
+                favoriteBooks.splice(index, 1);
+                favoriteBtn.innerHTML = '<i class="far fa-heart"></i>';
+            }
+            
+            // Sauvegarder dans le localStorage
+            localStorage.setItem('favoriteBooks', JSON.stringify(favoriteBooks));
+        }
+
+        // Mettre à jour le bouton favori
+        function updateFavoriteButton(bookId) {
+            if (favoriteBooks.includes(bookId)) {
+                favoriteBtn.innerHTML = '<i class="fas fa-heart"></i>';
+            } else {
+                favoriteBtn.innerHTML = '<i class="far fa-heart"></i>';
+            }
+        }
+
+        // Afficher les résultats de recherche
+ // Afficher les résultats de recherche avec les phrases contenant le terme
+function displaySearchResults(results) {
+    const query = searchInput.value.trim();
+    
+    if (query.length === 0) {
+        searchResults.classList.remove('active');
+        return;
+    }
+    
+    searchResults.innerHTML = '';
+    
+    if (results.length === 0) {
+        searchResults.innerHTML = '<div class="search-result-item">Aucun résultat trouvé</div>';
+        searchResults.classList.add('active');
+    } else {
+        // Afficher les phrases contenant le terme recherché
+        results.forEach((book) => {
+            book.chapters.forEach((chapter, chapterIndex) => {
+                // Trouver toutes les occurrences dans le contenu du chapitre
+                const content = chapter.content;
+                const regex = new RegExp(`([^.!?]*${query}[^.!?]*[.!?])`, 'gi');
+                const matches = content.match(regex);
+                
+                if (matches) {
+                    matches.forEach((sentence) => {
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'search-result-item';
+                        
+                        // Mettre en évidence le terme recherché dans la phrase
+                        const highlightedSentence = sentence.replace(
+                            new RegExp(query, 'gi'), 
+                            '<mark class="search-highlight">$&</mark>'
+                        );
+                        
+                        resultItem.innerHTML = `
+                            <div style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 5px;">
+                                <strong>${book.title}</strong> - ${chapter.title}
+                            </div>
+                            <div style="font-size: 0.85rem; line-height: 1.4;">
+                                ...${highlightedSentence}...
+                            </div>
+                        `;
+                        
+                        resultItem.addEventListener('click', () => {
+                            searchResults.classList.remove('active');
+                            searchInput.value = '';
+                            // Aller directement au chapitre et positionner près du terme
+                            goToSearchResult(book, chapterIndex, query, sentence);
+                        });
+                        
+                        searchResults.appendChild(resultItem);
+                    });
+                }
+            });
+        });
+        
+        // Si aucun résultat trouvé dans les phrases
+        if (searchResults.children.length === 0) {
+            searchResults.innerHTML = '<div class="search-result-item">Aucune phrase contenant ce terme</div>';
+        }
+        
+        searchResults.classList.add('active');
+    }
+}
+      // Mettre en surbrillance le texte dans la page de lecture
+function highlightSearchText(text) {
+    const chapterContent = document.getElementById('chapter-content');
+    const content = chapterContent.innerHTML;
+    
+    // Supprimer les anciennes surbrillances
+    const cleanContent = content.replace(/<mark class="search-highlight">|<\/mark>/gi, '');
+    
+    // Mettre en surbrillance le texte recherché
+    const regex = new RegExp(`(${text})`, 'gi');
+    const highlightedContent = cleanContent.replace(regex, '<mark class="search-highlight">$1</mark>');
+    
+    chapterContent.innerHTML = highlightedContent;
+}
+      // Mettre en surbrillance et aller au livre
+function highlightAndGoToBook(book, index) {
+    // Cacher les résultats popup
+    searchResults.classList.remove('active');
+    searchInput.value = '';
+    
+    // Afficher la page de résultats dédiée
+    showSearchResultsPage(window.searchResultsData, window.searchQuery, index);
+}
+// Fonction pour fermer le panneau de paramètres quand on clique en dehors
+function setupSettingsPanelClose() {
+    document.addEventListener('click', function(event) {
+        const settingsPanel = document.getElementById('settings-panel');
+        const settingsBtn = document.getElementById('reading-settings-btn');
+        
+        // Si le panneau est ouvert ET qu'on a cliqué en dehors du panneau ET en dehors du bouton
+        if (settingsPanel.classList.contains('active') && 
+            !settingsPanel.contains(event.target) && 
+            !settingsBtn.contains(event.target)) {
+            settingsPanel.classList.remove('active');
+        }
+    });
+}
+// Afficher la page de résultats
+function showSearchResultsPage(results, query, highlightedIndex = -1) {
+    // Mettre à jour le titre
+    document.getElementById('search-results-title').textContent = 
+        `Résultats pour "${query}" (${results.length})`;
+    
+    // Mettre la valeur de recherche dans l'input
+    const searchResultsInput = document.getElementById('search-results-input');
+    searchResultsInput.value = query;
+    searchResultsInput.focus(); // Focus sur le champ de recherche
+    
+    // Remplir la grille de résultats
+    const resultsGrid = document.getElementById('search-results-grid');
+    resultsGrid.innerHTML = '';
+    
+    results.forEach((book, index) => {
+        const bookCard = createBookCard(book);
+        
+        // Ajouter la surbrillance si c'est l'élément cliqué 
+        if (index === highlightedIndex) {
+            bookCard.style.border = '2px solid var(--primary-color)';
+            bookCard.style.boxShadow = '0 0 10px rgba(52, 152, 219, 0.5)';
+        }
+        
+        resultsGrid.appendChild(bookCard);
+    });
+    
+    // Afficher la page
+    showPage('search-results-page');
+}
+
+// Afficher la page de résultats
+function showSearchResultsPage(results) {
+    // Mettre à jour le titre
+    document.getElementById('search-results-title').textContent = 
+        `Résultats pour "${searchInput.value}" (${results.length})`;
+    
+    // Mettre la valeur de recherche dans l'input
+    document.getElementById('search-results-input').value = searchInput.value;
+    
+    // Remplir la grille de résultats
+    const resultsGrid = document.getElementById('search-results-grid');
+    resultsGrid.innerHTML = '';
+    
+    results.forEach(book => {
+        const bookCard = createBookCard(book);
+        resultsGrid.appendChild(bookCard);
+    });
+    
+    // Afficher la page
+    showPage('search-results-page');
+}
+
+        // Chapitre suivant
+        function nextChapter() {
+            if (currentBook && currentChapterIndex < currentBook.chapters.length - 1) {
+                showReadingPage(currentBook, currentChapterIndex + 1);
+            }
+        }
+
+        // Chapitre précédent
+        function previousChapter() {
+            if (currentBook && currentChapterIndex > 0) {
+                showReadingPage(currentBook, currentChapterIndex - 1);
+            }
+        }
+
+        // Mettre à jour la taille de police
+        function updateFontSize() {
+            const chapterContent = document.getElementById('chapter-content');
+            chapterContent.style.fontSize = `${fontSize}px`;
+            fontSizeDisplay.textContent = `${fontSize}px`;
+        }
+    </script>
+</body>
+</html>        
